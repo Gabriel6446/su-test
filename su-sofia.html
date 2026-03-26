@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Открий своята специалност във ФНОИ - СУ</title>
     <style>
-        /* Глобално правило, за да не излизат елементите извън екрана */
         * {
             box-sizing: border-box;
         }
@@ -32,12 +31,11 @@
             text-align: center;
         }
 
-        /* Стилове за логото */
         .logo-header {
             margin-bottom: 20px;
         }
         .logo-header img {
-            max-width: 120px; /* Контролираме размера, за да не е прекалено огромно */
+            max-width: 120px; 
             width: 100%;
             height: auto;
         }
@@ -93,7 +91,7 @@
             .app-container { padding: 15px; }
             h1 { font-size: 1.4em; }
             .answer-btn { font-size: 0.95em; }
-            .logo-header img { max-width: 100px; } /* Леко намаляваме логото на много малки екрани */
+            .logo-header img { max-width: 100px; } 
         }
     </style>
 </head>
@@ -224,8 +222,20 @@
         const progressText = document.getElementById('progress-text');
 
         function startQuiz() {
-            const shuffledBank = allQuestions.sort(() => 0.5 - Math.random());
-            currentQuestions = shuffledBank.slice(0, questionsPerTest);
+            // КОПИРАМЕ масива, за да не повредим оригинала
+            let availableQuestions = [...allQuestions];
+            currentQuestions = [];
+
+            // ТЕГЛЕНЕ БЕЗ ВРЪЩАНЕ - избираме 7 уникални въпроса
+            for(let i = 0; i < questionsPerTest; i++) {
+                const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+                // Добавяме избрания въпрос в списъка за текущия тест
+                currentQuestions.push(availableQuestions[randomIndex]);
+                // Изтриваме го от възможните опции, за да не се падне пак
+                availableQuestions.splice(randomIndex, 1);
+            }
+
+            // Разбъркваме отговорите (А, Б, В, Г) за всеки избран въпрос
             currentQuestions.forEach(q => {
                 q.a = q.a.sort(() => 0.5 - Math.random());
             });
